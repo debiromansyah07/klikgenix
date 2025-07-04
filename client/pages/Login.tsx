@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import { supabase } from "@/lib/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function Login() {
         // Tunggu sejenak supaya toast sempat tampil
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1000);
+        }, 1500);
       } else {
         toast({
           variant: "destructive",
