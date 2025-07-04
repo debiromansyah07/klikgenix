@@ -34,8 +34,14 @@ export default function Login() {
           description: result.error.message || "Email atau password salah.",
         });
       } else if (result.data?.user) {
+        const { data: sessionData } = await supabase.auth.getSession();
+      console.log("Session after login:", sessionData);
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
-        navigate("/dashboard");
+
+        // Tunggu sejenak supaya toast sempat tampil
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       } else {
         toast({
           variant: "destructive",
