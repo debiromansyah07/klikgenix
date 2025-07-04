@@ -22,12 +22,6 @@ export default function Login() {
   const { toast } = useToast();
   const { login } = useAuth();
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
