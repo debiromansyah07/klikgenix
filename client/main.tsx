@@ -6,11 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Fitur from "./pages/Fitur";
+import Fitur from "./pages/Fitur.tsx";
 import Harga from "./pages/Harga";
 import Tentang from "./pages/Tentang";
 import Informasi from "./pages/Informasi";
-import Artikel from "./pages/Artikel";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -32,7 +31,6 @@ const App = () => (
             <Route path="/harga" element={<Harga />} />
             <Route path="/tentang" element={<Tentang />} />
             <Route path="/informasi" element={<Informasi />} />
-            <Route path="/artikel" element={<Artikel />} />
             <Route path="/masuk" element={<Login />} />
             <Route path="/daftar" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
