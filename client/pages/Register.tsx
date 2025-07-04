@@ -205,7 +205,7 @@ export default function Register() {
         <div className="relative z-10 flex items-center justify-center min-h-screen p-8">
           <div className="w-full max-w-md animate-slide-in-right">
             {/* Mobile Logo */}
-            <div className="lg:hidden text-center mb-8">
+            <div className="block lg:hidden text-center mb-4 px-4">
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
                 <img
                   src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
