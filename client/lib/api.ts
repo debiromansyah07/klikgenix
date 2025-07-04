@@ -56,39 +56,34 @@ async function apiCall<T>(
   }
 }
 
-// Authentication API calls
+import { supabase } from "@/lib/supabase";
+
 export const authAPI = {
-  register: async (userData: {
-    fullName: string;
-    email: string;
-    password: string;
-    phone: string;
-    agreeTerms: boolean;
-    agreeMarketing?: boolean;
-  }) => {
-    return apiCall("/auth/register", {
-      method: "POST",
-      body: JSON.stringify(userData),
+  login: async (credentials: { email: string; password: string }) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
     });
+
+    return { data, error };
   },
 
-  login: async (credentials: {
+  register: async (userData: {
     email: string;
     password: string;
-    rememberMe: boolean;
   }) => {
-    return apiCall<LoginResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
+    const { data, error } = await supabase.auth.signUp({
+      email: userData.email,
+      password: userData.password,
     });
+
+    return { data, error };
   },
 
   logout: async () => {
-    return apiCall("/auth/logout", {
-      method: "POST",
-    });
+    await supabase.auth.signOut();
   },
-
+};
   getProfile: async () => {
     return apiCall("/auth/profile", {
       method: "GET",
@@ -133,38 +128,6 @@ export const paymentAPI = {
     return apiCall("/payment/cancel-subscription", {
       method: "POST",
     });
-  },
-};
-
-// Local storage utilities for authentication
-export const authStorage = {
-  setToken: (token: string) => {
-    localStorage.setItem("klixgenix_token", token);
-  },
-
-  getToken: () => {
-    return localStorage.getItem("klixgenix_token");
-  },
-
-  removeToken: () => {
-    localStorage.removeItem("klixgenix_token");
-  },
-
-  setUser: (user: any) => {
-    localStorage.setItem("klixgenix_user", JSON.stringify(user));
-  },
-
-  getUser: () => {
-    const user = localStorage.getItem("klixgenix_user");
-    return user ? JSON.parse(user) : null;
-  },
-
-  removeUser: () => {
-    localStorage.removeItem("klixgenix_user");
-  },
-
-  isAuthenticated: () => {
-    return !!authStorage.getToken();
   },
 };
 
