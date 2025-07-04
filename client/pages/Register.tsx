@@ -6,17 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  User,
-  Phone,
-  ArrowRight,
-  Shield,
-  Star,
-} from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, Phone, ArrowRight } from "lucide-react";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -26,7 +16,6 @@ export default function Register() {
     confirmPassword: "",
     phone: "",
     agreeTerms: false,
-    agreeMarketing: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -83,13 +72,12 @@ export default function Register() {
       {/* Right Side - Register Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 py-12 sm:px-8">
         {/* Mobile Logo */}
-        <div className="block lg:hidden text-center mb-6">
-       <div className="block lg:hidden flex flex-col justify-center items-center text-center mb-6">
-  <img
-    src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
-    alt="Logo"
-    className="w-20 h-20 mb-4 rounded-2xl shadow-xl object-cover"
-  />
+        <div className="block lg:hidden flex flex-col justify-center items-center text-center mb-6">
+          <img
+            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+            alt="Logo"
+            className="w-20 h-20 mb-4 rounded-2xl shadow-xl object-cover"
+          />
           <h2 className="text-lg text-gray-300">Buat akun baru</h2>
         </div>
 
