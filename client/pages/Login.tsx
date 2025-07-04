@@ -58,7 +58,7 @@ export default function Login() {
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
         <img
-          src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+          src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e"
           alt="logo"
           className="w-24 h-24 mb-6 rounded-2xl shadow-xl object-cover"
         />
@@ -68,15 +68,6 @@ export default function Login() {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 py-12 sm:px-8">
-        <div className="block lg:hidden flex flex-col justify-center items-center text-center mb-6">
-          <img
-            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
-            alt="Logo"
-            className="w-20 h-20 mb-4 rounded-2xl shadow-xl object-cover"
-          />
-          <h2 className="text-lg text-gray-300">Masuk ke akun Anda</h2>
-        </div>
-
         <div className="w-full max-w-md mx-auto bg-white/5 border border-white/10 p-6 rounded-2xl shadow-xl">
           <h2 className="text-2xl font-bold text-white text-center mb-4">Login</h2>
           <form onSubmit={handleSubmit} className="space-y-5">

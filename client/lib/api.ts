@@ -86,7 +86,6 @@ export const authAPI = {
   },
 };
 
-
 export const paymentAPI = {
   createPayment: async (paymentData: {
     plan: string;

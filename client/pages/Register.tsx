@@ -40,11 +40,13 @@ export default function Register() {
 
       if (password !== confirmPassword) {
         toast({ variant: "destructive", title: "Error", description: "Kata sandi tidak cocok." });
+        setIsLoading(false);
         return;
       }
 
       if (!agreeTerms) {
         toast({ variant: "destructive", title: "Error", description: "Harap setujui syarat & ketentuan." });
+        setIsLoading(false);
         return;
       }
 
@@ -70,8 +72,6 @@ export default function Register() {
   };
 
   return (
-
-    
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
         <img
@@ -89,19 +89,18 @@ export default function Register() {
           <h2 className="text-2xl font-bold text-white text-center mb-4">Daftar</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <Label htmlFor="fullName" className="text-white text-sm font-medium">Nama Lengkap</Label>
+              <Label htmlFor="full_name" className="text-white text-sm font-medium">Nama Lengkap</Label>
               <Input
-                id="fullName"
-                name="full_Name"
+                id="full_name"
+                name="full_name"
                 type="text"
-                value={formData.fullName}
+                value={formData.full_name}
                 onChange={handleChange}
                 placeholder="Nama lengkap"
                 className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="email" className="text-white text-sm font-medium">Email</Label>
               <Input
@@ -115,7 +114,6 @@ export default function Register() {
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="phone" className="text-white text-sm font-medium">No. HP</Label>
               <Input
@@ -128,7 +126,6 @@ export default function Register() {
                 className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
               />
             </div>
-
             <div>
               <Label htmlFor="password" className="text-white text-sm font-medium">Kata Sandi</Label>
               <div className="relative">
@@ -151,7 +148,6 @@ export default function Register() {
                 </button>
               </div>
             </div>
-
             <div>
               <Label htmlFor="confirmPassword" className="text-white text-sm font-medium">Konfirmasi Kata Sandi</Label>
               <div className="relative">
@@ -174,7 +170,6 @@ export default function Register() {
                 </button>
               </div>
             </div>
-
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -185,7 +180,6 @@ export default function Register() {
               />
               <Label htmlFor="agreeTerms" className="text-white text-sm">Saya menyetujui syarat & ketentuan</Label>
             </div>
-
             <Button
               type="submit"
               className="w-full gradient-primary text-white font-semibold py-3 rounded-xl"
@@ -193,7 +187,6 @@ export default function Register() {
             >
               {isLoading ? "Memproses..." : "Daftar"}
             </Button>
-
             <div className="text-center">
               <span className="text-gray-400">Sudah punya akun? </span>
               <Link to="/masuk" className="text-primary hover:text-primary/80 font-medium">Masuk di sini</Link>
