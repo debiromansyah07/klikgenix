@@ -3,41 +3,56 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { authAPI, handleAPIError } from "@/lib/api";
+import { authAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-
 export default function Login() {
-  ...
-  const { setUser } = useAuth(); // ✅ Tambah ini
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { setUser } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const result = await authAPI.login(formData);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-      if (result.error) {
-        toast({ variant: "destructive", title: "Login Gagal", description: result.error.message });
-      } else if (result.data) {
-        setUser(result.data.user); // ✅ Set context user
-        toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      toast({ variant: "destructive", title: "Login Gagal", description: "Terjadi kesalahan, coba lagi." });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  ...
-}
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const result = await authAPI.login(formData);
+
+      if (result.error) {
+        toast({
+          variant: "destructive",
+          title: "Login Gagal",
+          description: result.error.message || "Email atau password salah",
+        });
+      } else if (result.data?.user) {
+        setUser(result.data.user); // ✅ Update context user
+        toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Login Error",
+        description: "Terjadi kesalahan, coba lagi.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,7 +71,7 @@ export default function Login() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 py-12 sm:px-8">
         <div className="block lg:hidden flex flex-col justify-center items-center text-center mb-6">
           <img
-            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
             alt="Logo"
             className="w-20 h-20 mb-4 rounded-2xl shadow-xl object-cover"
           />
