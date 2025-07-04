@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KlixGenix.ID - Premium Apps Access</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <img
+            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+            alt="KlixGenix Logo"
+          />
+        </div>
+        <div class="loading-text">KlixGenix.ID</div>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+      <!-- Header -->
+      <header class="header">
+        <div class="brand">
+          <div class="brand-logo">
+            <img
+              src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+              alt="KlixGenix Logo"
+            />
+          </div>
+          <div class="brand-info">
+            <div class="brand-name">KlixGenix.ID</div>
+            <div class="brand-tagline">Premium Apps Access</div>
+          </div>
+        </div>
+        <div class="user-badge" id="user-badge">
+          <span class="plan-badge premium" id="plan-badge">PREMIUM</span>
+          <div class="status-dot"></div>
+        </div>
+      </header>
+
+      <!-- Search -->
+      <div class="search-container">
+        <div class="search-wrapper">
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Search premium apps..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab active" data-tab="apps">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <span>Apps</span>
+          </button>
+          <button class="tab" data-tab="recent">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12,6 12,12 16,14" />
+            </svg>
+            <span>Recent</span>
+          </button>
+          <button class="tab" data-tab="favorites">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polygon
+                points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+              />
+            </svg>
+            <span>Favorites</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Apps Tab -->
+        <div id="apps-content" class="tab-content active">
+          <div class="categories">
+            <button class="category-btn active" data-category="all">
+              <span>All</span>
+            </button>
+            <button class="category-btn" data-category="streaming">
+              <span>Streaming</span>
+            </button>
+            <button class="category-btn" data-category="design">
+              <span>Design</span>
+            </button>
+            <button class="category-btn" data-category="ai">
+              <span>AI</span>
+            </button>
+            <button class="category-btn" data-category="education">
+              <span>Education</span>
+            </button>
+            <button class="category-btn" data-category="writing">
+              <span>Writing</span>
+            </button>
+            <button class="category-btn" data-category="language">
+              <span>Language</span>
+            </button>
+            <button class="category-btn" data-category="research">
+              <span>Research</span>
+            </button>
+            <button class="category-btn" data-category="video">
+              <span>Video</span>
+            </button>
+            <button class="category-btn" data-category="audio">
+              <span>Audio</span>
+            </button>
+            <button class="category-btn" data-category="development">
+              <span>Dev</span>
+            </button>
+          </div>
+          <div id="apps-grid" class="apps-grid">
+            <!-- Apps will be rendered here by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Recent Tab -->
+        <div id="recent-content" class="tab-content">
+          <div id="recent-apps" class="apps-grid">
+            <!-- Recent apps will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Favorites Tab -->
+        <div id="favorites-content" class="tab-content">
+          <div id="favorites-apps" class="apps-grid">
+            <!-- Favorite apps will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-number" id="total-apps">84+</span>
+            <span class="stat-label">Apps</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="used-today">12</span>
+            <span class="stat-label">Today</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="uptime">00:00</span>
+            <span class="stat-label">Uptime</span>
+          </div>
+        </div>
+        <div class="footer-actions">
+          <button class="footer-btn" id="dashboard-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="12" width="7" height="9" rx="1" />
+              <rect x="3" y="16" width="7" height="5" rx="1" />
+            </svg>
+            <span>Dashboard</span>
+          </button>
+          <button class="footer-btn whatsapp-btn" id="whatsapp-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.087z"
+              />
+            </svg>
+            <span>Support</span>
+          </button>
+          <button class="footer-btn" id="settings-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v6m0 10v6m11-7h-6M7 12H1m19.07-7.07-4.24 4.24M12.02 12.02l-4.24 4.24M19.07 19.07l-4.24-4.24M12.02 7.98 7.78 3.74"
+              />
+            </svg>
+            <span>Settings</span>
+          </button>
+        </div>
+      </footer>
+
+      <!-- WhatsApp Floating Action Button -->
+      <div class="whatsapp-fab" id="whatsapp-fab">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path
+            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.087z"
+          />
+        </svg>
+        <div class="whatsapp-tooltip">Customer Support</div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

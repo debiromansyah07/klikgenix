@@ -1,0 +1,577 @@
+===============================================================================
+                        KLIXGENIX.ID DEPLOYMENT & INTEGRATION GUIDE
+===============================================================================
+
+OVERVIEW
+========
+Panduan lengkap untuk deploy website KlixGenix.ID dan integrasi semua fitur
+yang ada termasuk extension Chrome yang telah dikembangkan.
+
+===============================================================================
+BAGIAN 1: DEPLOYMENT DENGAN VERCEL (RECOMMENDED)
+===============================================================================
+
+PERSYARATAN AWAL
+================
+1. Akun GitHub dengan repository KlixGenix.ID
+2. Akun Vercel (gratis di vercel.com)
+3. Node.js v18 atau lebih baru
+4. Domain custom (opsional)
+
+LANGKAH-LANGKAH DEPLOYMENT VERCEL
+================================
+
+STEP 1: PERSIAPAN REPOSITORY
+----------------------------
+1. Push semua kode ke GitHub repository
+2. Pastikan struktur folder seperti ini:
+   /
+   ├── client/               # Frontend React aplikasi
+   ├── server/               # Backend API
+   ├── extension/            # Chrome extension files
+   └── package.json          # Dependencies utama
+
+STEP 2: KONFIGURASI BUILD SETTINGS
+----------------------------------
+1. Buat file vercel.json di root directory:
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/$1"
+    }
+  ]
+}
+
+STEP 3: ENVIRONMENT VARIABLES
+-----------------------------
+Setup di Vercel Dashboard:
+- NODE_ENV=production
+- JWT_SECRET=your_jwt_secret_key
+- DATABASE_URL=your_database_connection
+- TAWK_TO_PROPERTY_ID=your_tawk_to_id
+- PAYMENT_API_KEY=your_payment_api_key
+- EXTENSION_DOWNLOAD_URL=https://yourdomain.com/extension
+
+STEP 4: DEPLOYMENT PROCESS
+-------------------------
+1. Login ke vercel.com
+2. Import GitHub repository
+3. Pilih KlixGenix.ID repository
+4. Configure project settings:
+   - Framework: React
+   - Build Command: npm run build
+   - Output Directory: client/dist
+   - Install Command: npm install
+5. Add Environment Variables (dari STEP 3)
+6. Deploy!
+
+STEP 5: CUSTOM DOMAIN (OPSIONAL)
+-------------------------------
+1. Di Vercel Dashboard > Settings > Domains
+2. Add domain yang sudah dibeli
+3. Update DNS records sesuai instruksi Vercel
+4. Wait for SSL certificate provisioning
+
+===============================================================================
+BAGIAN 2: DEPLOYMENT DENGAN WORDPRESS (ALTERNATIF)
+===============================================================================
+
+CATATAN: WordPress deployment memerlukan adaptasi karena KlixGenix.ID 
+dibangun dengan React. Opsi ini cocok untuk hosting shared/VPS.
+
+LANGKAH-LANGKAH WORDPRESS DEPLOYMENT
+===================================
+
+STEP 1: BUILD STATIC FILES
+--------------------------
+1. Di local machine, jalankan:
+   cd client
+   npm run build
+
+2. Hasil build akan ada di client/dist/
+
+STEP 2: UPLOAD FILES
+-------------------
+1. Upload semua file dari client/dist/ ke public_html/
+2. Upload server files ke subdirectory api/
+3. Setup database MySQL melalui cPanel
+
+STEP 3: KONFIGURASI HOSTING
+---------------------------
+1. Create subdomain untuk API: api.yourdomain.com
+2. Point subdomain ke folder api/
+3. Setup Node.js di hosting (jika didukung)
+4. Install dependencies: npm install di folder api/
+
+STEP 4: DATABASE SETUP
+---------------------
+1. Create MySQL database via cPanel
+2. Import database schema
+3. Update connection string di server config
+
+STEP 5: HTACCESS CONFIGURATION
+------------------------------
+Buat file .htaccess di root:
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+===============================================================================
+BAGIAN 3: FILES YANG HARUS DIEDIT UNTUK INTEGRASI FITUR
+===============================================================================
+
+WEBSITE INTEGRATION FILES
+==========================
+
+1. CLIENT-SIDE CORE FILES (client/)
+----------------------------------
+a) client/src/App.tsx
+   - Router configuration
+   - Global providers setup
+   - Theme configuration
+
+b) client/src/main.tsx  
+   - Entry point aplikasi
+   - Global CSS imports
+   - Provider wrapping
+
+c) client/src/lib/api.ts
+   - API endpoints configuration
+   - Authentication headers
+   - Base URL configuration
+   *** EDIT: Update baseURL untuk production
+
+2. AUTHENTICATION SYSTEM (client/contexts/)
+------------------------------------------
+a) client/contexts/AuthContext.tsx
+   - JWT token management
+   - User session handling
+   - Login/logout functions
+   *** EDIT: Update API endpoints untuk production
+
+3. MAIN PAGES (client/pages/)
+-----------------------------
+a) client/pages/Index.tsx
+   - Homepage dengan hero section
+   - Feature showcases
+   - FloatingSupport widget
+
+b) client/pages/Dashboard.tsx
+   - User dashboard utama
+   - App management interface
+   - Premium features access
+
+c) client/pages/Login.tsx
+   - Authentication form
+   - Social login integration
+   *** EDIT: Update redirect URLs
+
+d) client/pages/Register.tsx
+   - User registration form
+   - Email verification
+   *** EDIT: Update API endpoints
+
+e) client/pages/Payment.tsx
+   - Payment processing
+   - E-wallet integration (GoPay, OVO, DANA, ShopeePay)
+   *** EDIT: Update payment gateway credentials
+
+f) client/pages/DownloadExtension.tsx
+   - Extension download functionality
+   - ZIP file generation with JSZip
+   - Installation instructions
+   *** EDIT: Update download URLs untuk production
+
+4. COMPONENTS (client/components/)
+---------------------------------
+a) client/components/Navigation.tsx
+   - Main navigation bar
+   - Logo integration (PNG/GIF)
+   *** EDIT: Update logo URLs untuk CDN production
+
+b) client/components/AppsListModal.tsx
+   - App listings (Premium: 71, Education: 46, Exclusive: 84)
+   - Modal functionality
+   *** EDIT: Update app data sources
+
+c) client/components/FloatingSupport.tsx
+   - Live chat integration
+   - WhatsApp support
+   - Email contact
+   *** EDIT: Update contact information dan Tawk.to ID
+
+d) client/components/NotificationModal.tsx
+   - Promo notifications
+   - Special offers display
+   *** EDIT: Update promo content dan links
+
+5. UI COMPONENTS (client/components/ui/)
+---------------------------------------
+a) client/components/ui/button.tsx
+   - Reusable button component
+   - Gradient styling
+
+b) client/components/ui/toast.tsx
+   - Notification system
+   - Success/error messages
+
+6. UTILITIES (client/lib/)
+-------------------------
+a) client/lib/support.ts
+   - Tawk.to integration
+   - WhatsApp contact setup
+   *** EDIT: Update contact details untuk production
+
+===============================================================================
+SERVER-SIDE INTEGRATION FILES
+===============================================================================
+
+7. SERVER CORE (server/)
+------------------------
+a) server/index.ts
+   - Express server setup
+   - API routes configuration
+   - Middleware setup
+   *** EDIT: Update CORS settings, port configuration
+
+b) server/routes/auth.ts
+   - Authentication endpoints
+   - JWT token handling
+   *** EDIT: Update JWT secrets, token expiry
+
+c) server/routes/payment.ts
+   - Payment processing
+   - E-wallet integration
+   *** EDIT: Update payment gateway API keys
+
+d) server/routes/user.ts
+   - User management
+   - Profile handling
+   *** EDIT: Update database connections
+
+8. DATABASE CONFIGURATION
+-------------------------
+a) server/config/database.ts
+   - Database connection setup
+   - Query configurations
+   *** EDIT: Update production database credentials
+
+===============================================================================
+CHROME EXTENSION INTEGRATION FILES
+===============================================================================
+
+9. EXTENSION CORE FILES (client/public/extension/)
+-------------------------------------------------
+a) client/public/extension/manifest.json
+   - Extension permissions
+   - Content scripts registration
+   - Background scripts setup
+   *** EDIT: Update version, permissions untuk production
+
+b) client/public/extension/popup.html
+   - Extension popup interface
+   - Logo integration
+   - User interface layout
+   *** EDIT: Update logo URLs, API endpoints
+
+c) client/public/extension/popup.js
+   - Main extension logic
+   - 71+ apps synchronization
+   - Premium site detection
+   *** EDIT: Update API endpoints, app data sources
+
+d) client/public/extension/background.js
+   - Service worker functionality
+   - Background processes
+   *** EDIT: Update API connections
+
+e) client/public/extension/content.js
+   - Content script injection
+   - Premium site detection
+   - Auto-login functionality
+   *** EDIT: Update site detection patterns
+
+f) client/public/extension/popup.css
+   - Extension styling
+   - Dark theme implementation
+   *** EDIT: Update theme colors, branding
+
+g) client/public/extension/content.css
+   - Content script styling
+   - Notification styling
+   *** EDIT: Update visual elements
+
+===============================================================================
+BAGIAN 4: KONFIGURASI ENVIRONMENT VARIABLES
+===============================================================================
+
+PRODUCTION ENVIRONMENT SETUP
+============================
+
+1. CLIENT-SIDE (.env)
+--------------------
+VITE_API_BASE_URL=https://yourdomain.com/api
+VITE_TAWK_TO_PROPERTY_ID=your_tawk_to_id
+VITE_EXTENSION_DOWNLOAD_URL=https://yourdomain.com/extension
+VITE_PAYMENT_GATEWAY_URL=https://api.payment-gateway.com
+VITE_CDN_BASE_URL=https://cdn.builder.io
+
+2. SERVER-SIDE (.env.production)
+-------------------------------
+NODE_ENV=production
+PORT=3001
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRES_IN=7d
+DATABASE_URL=your_production_database_url
+CORS_ORIGIN=https://yourdomain.com
+PAYMENT_API_KEY=your_payment_api_key
+PAYMENT_SECRET_KEY=your_payment_secret_key
+EMAIL_SMTP_HOST=smtp.your-provider.com
+EMAIL_SMTP_PORT=587
+EMAIL_USER=your_email@domain.com
+EMAIL_PASS=your_email_password
+
+===============================================================================
+BAGIAN 5: INTEGRASI FITUR KHUSUS
+===============================================================================
+
+PAYMENT GATEWAY INTEGRATION
+===========================
+
+1. E-WALLET SETUP
+----------------
+Files to edit: client/pages/Payment.tsx
+- GoPay Integration:
+  * API Endpoint: https://api.gopay.co.id/
+  * Icon: Builder.io CDN (8911826a320f43aca236337c2a499bad)
+  * Size: 80x80px
+
+- OVO Integration:
+  * API Endpoint: https://api.ovo.id/
+  * Icon: Builder.io CDN (952167071cd2494e90e2eac74f3c3eb5)
+  * Size: 64x64px
+
+- DANA Integration:
+  * API Endpoint: https://api.dana.id/
+  * Icon: Builder.io CDN (b7b2946d4d65420592f0492ed953ab8c)
+  * Size: 64x64px
+
+- ShopeePay Integration:
+  * API Endpoint: https://api.shopeepay.co.id/
+  * Icon: Builder.io CDN (5524704afe3848039bfad4ad4684e996)
+  * Size: 64x64px
+
+EXTENSION DOWNLOAD SYSTEM
+=========================
+
+1. ZIP GENERATION
+----------------
+Files to edit: client/pages/DownloadExtension.tsx
+- JSZip library integration
+- Real-time file generation
+- Progress tracking
+- Automatic download trigger
+
+Dependencies needed:
+npm install jszip @types/jszip
+
+2. EXTENSION FILES SYNC
+----------------------
+Files to edit: client/public/extension/popup.js
+- Sync dengan database apps
+- Premium: 71 apps
+- Education: 46 apps  
+- Exclusive: 84 apps
+- Real-time status updates
+
+LIVE CHAT INTEGRATION
+====================
+
+1. TAWK.TO SETUP
+---------------
+Files to edit: 
+- client/lib/support.ts
+- client/components/FloatingSupport.tsx
+
+Setup Steps:
+a) Register di tawk.to
+b) Get Property ID
+c) Update VITE_TAWK_TO_PROPERTY_ID
+d) Configure chat widget position
+
+2. WHATSAPP INTEGRATION
+----------------------
+WhatsApp Business API:
+- Number: +62 XXX XXX XXXX
+- Auto-message template
+- Deep linking untuk specific issues
+
+LOGO SYSTEM INTEGRATION
+=======================
+
+1. CDN LOGO SETUP
+----------------
+Files using logos (update all):
+- Navigation.tsx
+- Login.tsx  
+- Register.tsx
+- Dashboard.tsx
+- All static pages
+
+Logo URLs:
+- PNG Text Logo: https://cdn.builder.io/api/v1/image/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F3b20a908b17e42928b5c1217ef1988c3?format=webp&width=800
+- GIF Icon Logo: https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8
+
+Responsive sizes:
+- Mobile: h-16 (64px)
+- Tablet: h-20 (80px)  
+- Desktop: h-24 (96px)
+
+===============================================================================
+BAGIAN 6: TESTING & VALIDATION
+===============================================================================
+
+PRE-DEPLOYMENT CHECKLIST
+========================
+
+1. WEBSITE TESTING
+------------------
+□ Semua pages loading dengan benar
+□ Logo tampil di semua halaman
+□ Payment gateway berfungsi
+□ Authentication flow working
+□ Extension download menghasilkan ZIP file
+□ FloatingSupport widget active
+□ Responsive design di mobile/tablet/desktop
+□ Loading states dan error handling
+□ API endpoints responding correctly
+
+2. EXTENSION TESTING
+-------------------
+□ Manifest.json valid untuk Chrome Web Store
+□ Popup interface berfungsi
+□ Content scripts inject correctly
+□ Background service worker active
+□ Premium site detection working
+□ App synchronization dengan server
+□ Dark theme styling consistent
+□ Installation guide included
+
+3. PERFORMANCE TESTING
+----------------------
+□ Website loading time < 3 detik
+□ Image optimization (WebP format)
+□ API response time < 500ms
+□ Extension memory usage optimal
+□ Mobile performance smooth
+□ CDN assets loading correctly
+
+POST-DEPLOYMENT VERIFICATION
+============================
+
+1. Production URLs to test:
+--------------------------
+- https://yourdomain.com (Homepage)
+- https://yourdomain.com/login (Authentication)  
+- https://yourdomain.com/dashboard (User area)
+- https://yourdomain.com/download-extension (Extension)
+- https://yourdomain.com/payment (Payment flow)
+- https://yourdomain.com/api/health (API status)
+
+2. Extension functionality:
+--------------------------
+- Install extension dari download
+- Test pada premium sites
+- Verify app detection
+- Check auto-login features
+- Test popup interface
+
+===============================================================================
+BAGIAN 7: MAINTENANCE & UPDATES
+===============================================================================
+
+REGULAR MAINTENANCE TASKS
+=========================
+
+1. WEEKLY CHECKS
+---------------
+□ Server uptime monitoring
+□ Database backup verification
+□ API performance metrics
+□ Extension user feedback review
+□ Payment transaction logs
+
+2. MONTHLY UPDATES
+-----------------
+□ Dependencies security updates
+□ App database synchronization
+□ Extension version updates untuk Chrome Web Store
+□ Performance optimization review
+□ User analytics analysis
+
+3. QUARTERLY REVIEWS
+-------------------
+□ Full security audit
+□ Infrastructure scaling assessment
+□ Feature usage analytics
+□ User experience improvements
+□ Extension marketplace updates
+
+===============================================================================
+CONTACT SUPPORT
+===============================================================================
+
+Jika ada masalah selama deployment atau integrasi:
+
+1. Technical Issues:
+   - Email: dev@klixgenix.id
+   - WhatsApp: +62 XXX XXX XXXX
+
+2. Deployment Support:
+   - Live Chat via Tawk.to
+   - Documentation: https://docs.klixgenix.id
+
+3. Emergency Contact:
+   - Phone: +62 XXX XXX XXXX
+   - Telegram: @klixgenix_support
+
+===============================================================================
+CHANGELOG & VERSION HISTORY
+===============================================================================
+
+v1.0.0 (Current)
+- Complete website dengan 12+ pages
+- Chrome extension dengan 71+ apps
+- Payment integration (GoPay, OVO, DANA, ShopeePay)
+- Live chat support system
+- Logo system integration
+- Extension download functionality
+- Responsive design implementation
+
+===============================================================================
+END OF DEPLOYMENT GUIDE
+===============================================================================
+
+Panduan ini mencakup semua aspek deployment dan integrasi untuk platform
+KlixGenix.ID. Ikuti langkah-langkah dengan hati-hati dan pastikan semua
+environment variables sudah dikonfigurasi dengan benar sebelum go-live.
+
+Untuk pertanyaan lebih lanjut, hubungi tim development melalui kontak
+yang telah disediakan di atas.

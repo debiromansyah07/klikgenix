@@ -1,0 +1,17 @@
+KlixGenix Browser Extension Download
+
+This folder contains KlixGenix browser extension files:
+
+- klixgenix-premium-extension.zip
+- klixgenix-education-extension.zip 
+- klixgenix-exclusive-extension.zip
+
+Installation Guide:
+1. Download the appropriate extension for your plan
+2. Extract the ZIP file
+3. Open Chrome and go to chrome://extensions/
+4. Enable "Developer mode" 
+5. Click "Load unpacked" and select the extracted folder
+6. The KlixGenix extension icon will appear in your toolbar
+
+Support: support@klixgenix.id

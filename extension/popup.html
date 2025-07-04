@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KlixGenix.ID - Premium Access</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <img
+            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+            alt="KlixGenix Logo"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              border-radius: 12px;
+            "
+          />
+        </div>
+        <div class="loading-text">KlixGenix.ID</div>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+      <!-- Header -->
+      <header class="header">
+        <div class="brand">
+          <div class="brand-logo">
+            <img
+              src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+              alt="KlixGenix Logo"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 8px;
+              "
+            />
+          </div>
+          <div class="brand-info">
+            <div class="brand-name">KlixGenix.ID</div>
+            <div class="brand-tagline">Premium Access</div>
+          </div>
+        </div>
+        <div class="user-badge" id="user-badge">
+          <span class="plan-badge" id="plan-badge">PREMIUM</span>
+          <div class="status-dot"></div>
+        </div>
+      </header>
+
+      <!-- Search -->
+      <div class="search-container">
+        <div class="search-wrapper">
+          <svg
+            class="search-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+              stroke="currentcolor"
+              stroke-width="2"
+            />
+            <path d="m21 21-4.35-4.35" stroke="currentcolor" stroke-width="2" />
+          </svg>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search apps..."
+            class="search-input"
+          />
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab active" data-tab="apps">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="14"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="3"
+                y="14"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Apps
+          </button>
+          <button class="tab" data-tab="recent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <polyline
+                points="12,6 12,12 16,14"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Recent
+          </button>
+          <button class="tab" data-tab="favorites">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <polygon
+                points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Favorites
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Apps Tab -->
+        <div id="apps-content" class="tab-content active">
+          <div class="categories">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="streaming">
+              Streaming
+            </button>
+            <button class="category-btn" data-category="design">Design</button>
+            <button class="category-btn" data-category="ai">AI</button>
+            <button class="category-btn" data-category="education">
+              Education
+            </button>
+            <button class="category-btn" data-category="writing">
+              Writing
+            </button>
+            <button class="category-btn" data-category="tools">Tools</button>
+          </div>
+
+          <div class="apps-grid" id="apps-grid">
+            <!-- Apps will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Recent Tab -->
+        <div id="recent-content" class="tab-content">
+          <div class="recent-apps" id="recent-apps">
+            <!-- Recent apps will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Favorites Tab -->
+        <div id="favorites-content" class="tab-content">
+          <div class="favorites-apps" id="favorites-apps">
+            <!-- Favorite apps will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-number" id="total-apps">50+</span>
+            <span class="stat-label">Apps</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="used-today">12</span>
+            <span class="stat-label">Today</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">99.9%</span>
+            <span class="stat-label">Uptime</span>
+          </div>
+        </div>
+        <div class="footer-actions">
+          <button class="footer-btn" id="dashboard-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="9"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="5"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="12"
+                width="7"
+                height="9"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="3"
+                y="16"
+                width="7"
+                height="5"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Dashboard
+          </button>
+          <button class="footer-btn" id="settings-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="12"
+                r="3"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="m12 1 1.32 3.74 3.74 1.32-1.32 3.74L12 11.32 8.26 10l-1.32-3.74L10.68 4.74 12 1Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Settings
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- App Modal -->
+    <div id="app-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="app-info">
+            <div class="app-icon" id="modal-app-icon">🎬</div>
+            <div class="app-details">
+              <div class="app-name" id="modal-app-name">Netflix</div>
+              <div class="app-category" id="modal-app-category">Streaming</div>
+            </div>
+          </div>
+          <button class="close-btn" id="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="access-status">
+            <div class="status-icon">✅</div>
+            <div class="status-text">
+              <div class="status-title">Ready to Access</div>
+              <div class="status-description">
+                Click below to open and auto-login
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="primary-btn" id="open-app-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <polyline
+                  points="15,3 21,3 21,9"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <line
+                  x1="10"
+                  y1="14"
+                  x2="21"
+                  y2="3"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              Open App
+            </button>
+            <button class="secondary-btn" id="add-favorite-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <polygon
+                  points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              Add to Favorites
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
