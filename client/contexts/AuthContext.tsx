@@ -5,26 +5,25 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { authStorage } from "@/lib/api";
+import { supabase } from "@/lib/supabase"; // pastikan path sesuai
 
 interface User {
   id: string;
-  fullName: string;
   email: string;
-  plan?: string;
+  fullName?: string;
   phone?: string;
   avatar?: string;
   bio?: string;
   location?: string;
   website?: string;
+  plan?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (user: User, token: string) => void;
-  logout: () => void;
   loading: boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,35 +37,80 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in on app start
-    const storedUser = authStorage.getUser();
-    const storedToken = authStorage.getToken();
+    // Check session on initial load
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (storedUser && storedToken) {
-      setUser(storedUser);
-    }
+      if (session?.user) {
+        const profile = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single();
 
-    setLoading(false);
+        setUser({
+          id: session.user.id,
+          email: session.user.email!,
+          fullName: profile.data?.fullName,
+          phone: profile.data?.phone,
+          avatar: profile.data?.avatar,
+          bio: profile.data?.bio,
+          location: profile.data?.location,
+          website: profile.data?.website,
+          plan: profile.data?.plan,
+        });
+      } else {
+        setUser(null);
+      }
+
+      setLoading(false);
+    };
+
+    getSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (session?.user) {
+          const profile = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("user_id", session.user.id)
+            .single();
+
+          setUser({
+            id: session.user.id,
+            email: session.user.email!,
+            fullName: profile.data?.fullName,
+            phone: profile.data?.phone,
+            avatar: profile.data?.avatar,
+            bio: profile.data?.bio,
+            location: profile.data?.location,
+            website: profile.data?.website,
+            plan: profile.data?.plan,
+          });
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = (userData: User, token: string) => {
-    setUser(userData);
-    authStorage.setUser(userData);
-    authStorage.setToken(token);
-  };
-
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    authStorage.removeUser();
-    authStorage.removeToken();
   };
 
   const value = {
     user,
     isAuthenticated: !!user,
-    login,
-    logout,
     loading,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
