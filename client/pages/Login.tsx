@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +53,7 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
