@@ -63,23 +63,21 @@ export const authAPI = {
       password: formData.password,
     });
 
-    if (error) {
-      return { error };
-    }
-
-    if (!data.session) {
-      return { error: { message: "Login gagal, sesi tidak ditemukan." } };
-    }
-
+    if (error) return { error };
     return { data };
   },
 
-  register: async (userData: { email: string; password: string }) => {
+  register: async (userData: { email: string; password: string; full_name: string; phone: string }) => {
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
       password: userData.password,
+      options: {
+        data: {
+          full_name: userData.full_name,
+          phone: userData.phone,
+        },
+      },
     });
-
     return { data, error };
   },
 
@@ -87,6 +85,7 @@ export const authAPI = {
     await supabase.auth.signOut();
   },
 };
+
 
 export const paymentAPI = {
   createPayment: async (paymentData: {

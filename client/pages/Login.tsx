@@ -1,21 +1,13 @@
-// Login.tsx
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { authAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { setUser } = useAuth();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +29,6 @@ export default function Login() {
           description: result.error.message || "Email atau password salah.",
         });
       } else if (result.data?.user) {
-        setUser(result.data.user);
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
         navigate("/dashboard");
       } else {
@@ -57,8 +48,7 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
-
+  
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
