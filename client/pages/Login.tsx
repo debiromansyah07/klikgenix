@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
-import { supabase } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -34,21 +34,12 @@ export default function Login() {
           title: "Login Gagal",
           description: result.error.message || "Email atau password salah.",
         });
-      } else if (result.data?.user) {
-        const { data: sessionData } = await supabase.auth.getSession();
-      console.log("Session after login:", sessionData);
+      } else {
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
 
-        // Tunggu sejenak supaya toast sempat tampil
         setTimeout(() => {
           navigate("/dashboard");
         }, 1500);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Gagal",
-          description: "Login gagal, data user tidak ditemukan.",
-        });
       }
     } catch (error: any) {
       toast({

@@ -1,71 +1,64 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
   const { toast } = useToast();
-
   const [formData, setFormData] = useState({
-    full_name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    phone: "",
-    agreeTerms: false,
   });
-
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Konfirmasi kata sandi tidak cocok.",
+      });
+      return;
+    }
+
     setIsLoading(true);
-
     try {
-      const { full_name, email, phone, password, confirmPassword, agreeTerms } = formData;
-
-      if (password !== confirmPassword) {
-        toast({ variant: "destructive", title: "Error", description: "Kata sandi tidak cocok." });
-        setIsLoading(false);
-        return;
-      }
-
-      if (!agreeTerms) {
-        toast({ variant: "destructive", title: "Error", description: "Harap setujui syarat & ketentuan." });
-        setIsLoading(false);
-        return;
-      }
-
-      const result = await authAPI.register({ email, password, full_name, phone });
+      const result = await authAPI.register(formData);
 
       if (result.error) {
         toast({
           variant: "destructive",
-          title: "Gagal Daftar",
-          description: result.error.message || "Terjadi kesalahan saat mendaftar.",
+          title: "Register Gagal",
+          description: result.error.message || "Terjadi kesalahan.",
         });
-      } else if (result.data?.user) {
-        toast({ title: "Pendaftaran Berhasil", description: "Silakan login untuk melanjutkan." });
-        navigate("/masuk");
       } else {
-        toast({ variant: "destructive", title: "Gagal Daftar", description: "Tidak bisa mendaftar, coba lagi." });
+        toast({
+          title: "Berhasil Daftar",
+          description: "Silakan login dengan akunmu.",
+        });
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
       }
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Gagal Daftar", description: error?.message || "Terjadi kesalahan." });
+      toast({
+        variant: "destructive",
+        title: "Register Error",
+        description: error?.message || "Terjadi kesalahan.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +68,7 @@ export default function Register() {
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
         <img
-          src="https://cdn.builder.io/api/v1/image/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F3b20a908b17e42928b5c1217ef1988c3"
+          src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
           alt="logo"
           className="w-24 h-24 mb-6 rounded-2xl shadow-xl object-cover"
         />
@@ -88,47 +81,27 @@ export default function Register() {
         <div className="w-full max-w-md mx-auto bg-white/5 border border-white/10 p-6 rounded-2xl shadow-xl">
           <h2 className="text-2xl font-bold text-white text-center mb-4">Daftar</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label htmlFor="full_name" className="text-white text-sm font-medium">Nama Lengkap</Label>
-              <Input
-                id="full_name"
-                name="full_name"
-                type="text"
-                value={formData.full_name}
-                onChange={handleChange}
-                placeholder="Nama lengkap"
-                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
-                required
-              />
-            </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="email" className="text-white text-sm font-medium">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="nama@email.com"
-                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
-                required
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="nama@email.com"
+                  className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 pl-12 py-3 rounded-xl"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <Label htmlFor="phone" className="text-white text-sm font-medium">No. HP</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="text"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="08xxxxxxxxxx"
-                className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
-              />
-            </div>
-            <div>
+
+            <div className="space-y-2">
               <Label htmlFor="password" className="text-white text-sm font-medium">Kata Sandi</Label>
               <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   id="password"
                   name="password"
@@ -136,7 +109,7 @@ export default function Register() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
+                  className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 pl-12 pr-12 py-3 rounded-xl"
                   required
                 />
                 <button
@@ -144,52 +117,39 @@ export default function Register() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
-            <div>
+
+            <div className="space-y-2">
               <Label htmlFor="confirmPassword" className="text-white text-sm font-medium">Konfirmasi Kata Sandi</Label>
               <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 py-3 rounded-xl"
+                  className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 pl-12 pr-12 py-3 rounded-xl"
                   required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  {showConfirmPassword ? "🙈" : "👁️"}
-                </button>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="agreeTerms"
-                checked={formData.agreeTerms}
-                onChange={handleChange}
-                className="accent-primary"
-              />
-              <Label htmlFor="agreeTerms" className="text-white text-sm">Saya menyetujui syarat & ketentuan</Label>
-            </div>
+
             <Button
               type="submit"
               className="w-full gradient-primary text-white font-semibold py-3 rounded-xl"
               disabled={isLoading}
             >
-              {isLoading ? "Memproses..." : "Daftar"}
+              {isLoading ? "Memproses..." : <>Daftar <ArrowRight className="ml-2 w-4 h-4" /></>}
             </Button>
+
             <div className="text-center">
               <span className="text-gray-400">Sudah punya akun? </span>
-              <Link to="/masuk" className="text-primary hover:text-primary/80 font-medium">Masuk di sini</Link>
+              <Link to="/login" className="text-primary hover:text-primary/80 font-medium">Masuk di sini</Link>
             </div>
           </form>
         </div>

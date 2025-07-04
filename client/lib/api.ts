@@ -54,7 +54,7 @@ async function apiCall<T>(
   }
 }
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from "./supabase";
 
 export const authAPI = {
   login: async (formData: { email: string; password: string }) => {
