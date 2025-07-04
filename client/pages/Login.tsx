@@ -34,13 +34,21 @@ export default function Login() {
       const result = await authAPI.login(formData);
 
       if (result.error) {
-        toast({
-          variant: "destructive",
-          title: "Login Gagal",
-          description: result.error.message || "Email atau password salah",
-        });
+        if (result.error.message === "Email not confirmed") {
+          toast({
+            variant: "destructive",
+            title: "Login Gagal",
+            description: "Email belum dikonfirmasi! Silakan cek email Anda.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Login Gagal",
+            description: result.error.message || "Email atau password salah",
+          });
+        }
       } else if (result.data?.user) {
-        setUser(result.data.user); // ✅ Update context user
+        setUser(result.data.user);
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
         navigate("/dashboard");
       }
@@ -132,7 +140,7 @@ export default function Login() {
 
             <div className="text-center">
               <span className="text-gray-400">Belum punya akun? </span>
-              <Link to="/register" className="text-primary hover:text-primary/80 font-medium">Daftar sekarang</Link>
+              <Link to="/daftar" className="text-primary hover:text-primary/80 font-medium">Daftar sekarang</Link>
             </div>
           </form>
         </div>
