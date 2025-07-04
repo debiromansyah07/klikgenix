@@ -69,8 +69,8 @@ export default function Register() {
     }
   };
 
-
   return (
+
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-center p-12">
         <img
@@ -91,7 +91,7 @@ export default function Register() {
               <Label htmlFor="fullName" className="text-white text-sm font-medium">Nama Lengkap</Label>
               <Input
                 id="fullName"
-                name="fullName"
+                name="full_Name"
                 type="text"
                 value={formData.fullName}
                 onChange={handleChange}
