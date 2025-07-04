@@ -59,19 +59,20 @@ async function apiCall<T>(
 import { supabase } from "@/lib/supabase";
 
 export const authAPI = {
-  login: async (credentials: { email: string; password: string }) => {
+  login: async (formData: { email: string; password: string }) => {
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
+      email: formData.email,
+      password: formData.password,
     });
 
-    return { data, error };
+    if (error) {
+      return { error };
+    }
+
+    return { data };
   },
 
-  register: async (userData: {
-    email: string;
-    password: string;
-  }) => {
+  register: async (userData: { email: string; password: string }) => {
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
       password: userData.password,
@@ -84,12 +85,7 @@ export const authAPI = {
     await supabase.auth.signOut();
   },
 };
-  getProfile: async () => {
-    return apiCall("/auth/profile", {
-      method: "GET",
-    });
-  },
-};
+
 
 // Payment API calls
 export const paymentAPI = {

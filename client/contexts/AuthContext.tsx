@@ -5,7 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabase"; // pastikan path sesuai
+import { supabase } from "@/lib/supabase";
 
 interface User {
   id: string;
@@ -24,27 +24,23 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   logout: () => void;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check session on initial load
     const getSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (session?.user) {
-        const profile = await supabase
+        const { data: profile } = await supabase
           .from("user_profiles")
           .select("*")
           .eq("user_id", session.user.id)
@@ -53,18 +49,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser({
           id: session.user.id,
           email: session.user.email!,
-          fullName: profile.data?.fullName,
-          phone: profile.data?.phone,
-          avatar: profile.data?.avatar,
-          bio: profile.data?.bio,
-          location: profile.data?.location,
-          website: profile.data?.website,
-          plan: profile.data?.plan,
+          fullName: profile?.fullName,
+          phone: profile?.phone,
+          avatar: profile?.avatar,
+          bio: profile?.bio,
+          location: profile?.location,
+          website: profile?.website,
+          plan: profile?.plan,
         });
       } else {
         setUser(null);
       }
-
       setLoading(false);
     };
 
@@ -73,7 +68,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          const profile = await supabase
+          const { data: profile } = await supabase
             .from("user_profiles")
             .select("*")
             .eq("user_id", session.user.id)
@@ -82,13 +77,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setUser({
             id: session.user.id,
             email: session.user.email!,
-            fullName: profile.data?.fullName,
-            phone: profile.data?.phone,
-            avatar: profile.data?.avatar,
-            bio: profile.data?.bio,
-            location: profile.data?.location,
-            website: profile.data?.website,
-            plan: profile.data?.plan,
+            fullName: profile?.fullName,
+            phone: profile?.phone,
+            avatar: profile?.avatar,
+            bio: profile?.bio,
+            location: profile?.location,
+            website: profile?.website,
+            plan: profile?.plan,
           });
         } else {
           setUser(null);
@@ -106,14 +101,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    loading,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, logout, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
