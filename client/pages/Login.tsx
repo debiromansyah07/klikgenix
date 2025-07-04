@@ -59,9 +59,9 @@ export default function Login() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 py-12 sm:px-8">
         <div className="block lg:hidden text-center mb-6">
           <img
-                src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
-                alt="Logo"
-            className="w-16 h-16 mx-auto mb-2 rounded-2xl shadow-xl object-cover"
+            src="https://cdn.builder.io/o/assets%2Fec2d43fcf8b54a079080fd57b2b293e8%2F5105ee43038e43c1a5e35d9df158470e?alt=media&token=d87a45ad-fc03-472a-bc02-8eeab82821c8&apiKey=ec2d43fcf8b54a079080fd57b2b293e8"
+            alt="Logo"
+            className="w-24 h-24 mb-6 rounded-2xl shadow-xl object-cover"
           />
           <h2 className="text-lg text-gray-300">Masuk ke akun Anda</h2>
         </div>
