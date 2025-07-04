@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface NavigationProps {
   language?: string;
@@ -108,13 +109,13 @@ export default function Navigation({
             variant="ghost"
             className="text-white hover:bg-white/10 hidden sm:inline-flex"
           >
-            <a href="/login">{t.login}</a>
+            <Link to="/masuk">{t.login}</Link>
           </Button>
           <Button
             asChild
             className="gradient-primary text-white font-medium px-4 md:px-6 text-sm md:text-base"
           >
-            <a href="/register">{t.register}</a>
+            <Link to="/daftar">{t.register}</Link>
           </Button>
         </div>
       </div>
