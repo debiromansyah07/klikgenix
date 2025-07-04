@@ -6,29 +6,34 @@ import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  ...
+  const { setUser } = useAuth(); // ✅ Tambah ini
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const result = await authAPI.login(formData);
-      if (result.success) {
+
+      if (result.error) {
+        toast({ variant: "destructive", title: "Login Gagal", description: result.error.message });
+      } else if (result.data) {
+        setUser(result.data.user); // ✅ Set context user
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
-        navigate("/");
+        navigate("/dashboard");
       }
     } catch (error) {
-      toast({ variant: "destructive", title: "Login Gagal", description: handleAPIError(error) });
+      toast({ variant: "destructive", title: "Login Gagal", description: "Terjadi kesalahan, coba lagi." });
     } finally {
       setIsLoading(false);
     }
   };
+  ...
+}
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
