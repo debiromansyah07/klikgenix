@@ -202,7 +202,7 @@ export default function Register() {
         {/* Background Pattern for right side */}
         <div className="absolute inset-0 hero-bg"></div>
 
-        <div className="relative z-10 flex items-center justify-center min-h-screen p-8">
+        <div className="relative z-10 flex flex-col justify-center py-8 px-4 sm:px-8">
           <div className="w-full max-w-md animate-slide-in-right">
             {/* Mobile Logo */}
             <div className="block lg:hidden text-center mb-4 px-4">
