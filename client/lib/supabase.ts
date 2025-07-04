@@ -4,14 +4,12 @@
 // TODO: Install Supabase client
 // npm install @supabase/supabase-js
 
-// import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-// const supabaseUrl = process.env.VITE_SUPABASE_URL!
-// const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY!
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Database table structures for KlixGenix.ID:
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface User {
   id: string;
@@ -41,30 +39,10 @@ export interface UserProfile {
 
 export interface NotificationSettings {
   user_id: string;
-  email_notifications: {
-    productUpdates: boolean;
-    securityAlerts: boolean;
-    paymentReminders: boolean;
-    promotions: boolean;
-    newsletter: boolean;
-  };
-  push_notifications: {
-    appUpdates: boolean;
-    accountActivity: boolean;
-    maintenanceAlerts: boolean;
-    newFeatures: boolean;
-  };
-  sms_notifications: {
-    securityAlerts: boolean;
-    paymentAlerts: boolean;
-    emergencyOnly: boolean;
-  };
-  preferences: {
-    frequency: string;
-    quietHours: boolean;
-    quietStart: string;
-    quietEnd: string;
-  };
+  email_notifications: any;
+  push_notifications: any;
+  sms_notifications: any;
+  preferences: any;
   updated_at: string;
 }
 
@@ -105,120 +83,119 @@ export interface AppUsage {
   created_at: string;
 }
 
-// Utility functions for database operations
 export const supabaseUtils = {
-  // User Profile Operations
+  // User Profile
   async getUserProfile(userId: string) {
-    // const { data, error } = await supabase
-    //   .from('user_profiles')
-    //   .select('*')
-    //   .eq('user_id', userId)
-    //   .single()
-    // return { data, error }
-    console.log("Getting user profile for:", userId);
-    return { data: null, error: null };
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    return { data, error };
   },
 
   async updateUserProfile(userId: string, profileData: Partial<UserProfile>) {
-    // const { data, error } = await supabase
-    //   .from('user_profiles')
-    //   .upsert({
-    //     user_id: userId,
-    //     ...profileData,
-    //     updated_at: new Date().toISOString()
-    //   })
-    //   .select()
-    //   .single()
-    // return { data, error }
-    console.log("Updating user profile:", userId, profileData);
-    return { data: profileData, error: null };
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .upsert({
+        user_id: userId,
+        ...profileData,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+    return { data, error };
   },
 
-  // Notification Settings Operations
+  // Notification Settings
   async getNotificationSettings(userId: string) {
-    // const { data, error } = await supabase
-    //   .from('notification_settings')
-    //   .select('*')
-    //   .eq('user_id', userId)
-    //   .single()
-    // return { data, error }
-    console.log("Getting notification settings for:", userId);
-    return { data: null, error: null };
+    const { data, error } = await supabase
+      .from('notification_settings')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    return { data, error };
   },
 
-  async updateNotificationSettings(
-    userId: string,
-    settings: Partial<NotificationSettings>,
-  ) {
-    // const { data, error } = await supabase
-    //   .from('notification_settings')
-    //   .upsert({
-    //     user_id: userId,
-    //     ...settings,
-    //     updated_at: new Date().toISOString()
-    //   })
-    //   .select()
-    //   .single()
-    // return { data, error }
-    console.log("Updating notification settings:", userId, settings);
-    return { data: settings, error: null };
+  async updateNotificationSettings(userId: string, settings: Partial<NotificationSettings>) {
+    const { data, error } = await supabase
+      .from('notification_settings')
+      .upsert({
+        user_id: userId,
+        ...settings,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+    return { data, error };
   },
 
-  // Subscription Operations
+  // Subscription
   async getUserSubscription(userId: string) {
-    // const { data, error } = await supabase
-    //   .from('subscriptions')
-    //   .select('*')
-    //   .eq('user_id', userId)
-    //   .eq('status', 'active')
-    //   .single()
-    // return { data, error }
-    console.log("Getting subscription for:", userId);
-    return { data: null, error: null };
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
+    return { data, error };
   },
 
-  // Payment Operations
+  // Payments
   async getPaymentHistory(userId: string) {
-    // const { data, error } = await supabase
-    //   .from('payments')
-    //   .select('*')
-    //   .eq('user_id', userId)
-    //   .order('created_at', { ascending: false })
-    // return { data, error }
-    console.log("Getting payment history for:", userId);
-    return { data: [], error: null };
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    return { data, error };
   },
 
-  // App Usage Tracking
+  // App Usage
   async trackAppUsage(userId: string, appName: string, appCategory: string) {
-    // const { data, error } = await supabase
-    //   .from('app_usage')
-    //   .upsert({
-    //     user_id: userId,
-    //     app_name: appName,
-    //     app_category: appCategory,
-    //     access_method: 'extension',
-    //     usage_count: 1,
-    //     last_accessed: new Date().toISOString(),
-    //     created_at: new Date().toISOString()
-    //   }, {
-    //     onConflict: 'user_id,app_name',
-    //     ignoreDuplicates: false
-    //   })
-    // return { data, error }
-    console.log("Tracking app usage:", userId, appName, appCategory);
-    return { data: null, error: null };
+    const { data, error } = await supabase
+      .from('app_usage')
+      .upsert({
+        user_id: userId,
+        app_name: appName,
+        app_category: appCategory,
+        access_method: 'extension',
+        usage_count: 1,
+        last_accessed: new Date().toISOString(),
+        created_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,app_name'
+      });
+    return { data, error };
   },
 
-  // Auth Operations
+  // Auth
   async updatePassword(newPassword: string) {
-    // const { error } = await supabase.auth.updateUser({
-    //   password: newPassword
-    // })
-    // return { error }
-    console.log("Updating password");
-    return { error: null };
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    return { error };
   },
+
+  async uploadAvatar(userId: string, file: File) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Math.random()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) return { data: null, error: uploadError };
+
+    const { data: urlData } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return { data: urlData.publicUrl, error: null };
+  }
+};
+
 
   async uploadAvatar(userId: string, file: File) {
     // const fileExt = file.name.split('.').pop()
