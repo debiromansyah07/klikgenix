@@ -26,12 +26,19 @@ export default function Register() {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
+  const { fullName, email, phone, password, confirmPassword, agreeTerms } = formData;
+
   if (password !== confirmPassword) {
     alert("Kata sandi tidak cocok!");
     return;
   }
 
-  setLoading(true);
+  if (!agreeTerms) {
+    alert("Anda harus menyetujui syarat & ketentuan");
+    return;
+  }
+
+  setIsLoading(true);
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -44,14 +51,16 @@ const handleSubmit = async (e: React.FormEvent) => {
     },
   });
 
-  setLoading(false);
+  setIsLoading(false);
 
   if (error) {
     alert(error.message);
   } else {
-    navigate("/masuk"); // ✅ Pindahkan di sini, di dalam blok else
+    // ✅ Kalau sukses, navigate ke halaman login
+    navigate("/masuk");
   }
-}; // ✅ Tutup function di sini
+};
+
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -219,7 +228,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <div className="text-center">
               <span className="text-gray-400">Sudah punya akun? </span>
-              <Link to="/login" className="text-primary hover:text-primary/80 font-medium">Masuk di sini</Link>
+              <Link to="/masuk" className="text-primary hover:text-primary/80 font-medium">Masuk di sini</Link>
             </div>
           </form>
         </div>
