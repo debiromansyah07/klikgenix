@@ -23,32 +23,36 @@ export default function Register() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      toast({ variant: "destructive", title: "Error", description: "Password tidak cocok!" });
-      return;
-    }
+  if (password !== confirmPassword) {
+    alert("Kata sandi tidak cocok!");
+    return;
+  }
 
-    if (!formData.agreeTerms) {
-      toast({ variant: "destructive", title: "Error", description: "Anda harus menyetujui syarat & ketentuan!" });
-      return;
-    }
+  setLoading(true);
 
-    setIsLoading(true);
-    try {
-      const result = await authAPI.register(formData);
-      if (result.success) {
-        toast({ title: "Registrasi Berhasil", description: "Akun berhasil dibuat. Silakan login." });
-        navigate("/login");
-      }
-    } catch (error) {
-      toast({ variant: "destructive", title: "Registrasi Gagal", description: handleAPIError(error) });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        phone,
+      },
+    },
+  });
+
+  setLoading(false);
+
+  if (error) {
+    alert(error.message);
+  } else {
+    navigate("/masuk"); // ✅ Pindahkan di sini, di dalam blok else
+  }
+}; // ✅ Tutup function di sini
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -223,6 +227,3 @@ export default function Register() {
     </div>
   );
 }
-    navigate("/masuk");
-  }
-};
