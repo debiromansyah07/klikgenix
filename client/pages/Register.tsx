@@ -223,3 +223,6 @@ export default function Register() {
     </div>
   );
 }
+    navigate("/masuk");
+  }
+};
