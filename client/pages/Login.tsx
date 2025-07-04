@@ -1,3 +1,4 @@
+// Login.tsx
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +14,7 @@ export default function Login() {
   const { toast } = useToast();
   const { setUser } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,34 +31,33 @@ export default function Login() {
       const result = await authAPI.login(formData);
 
       if (result.error) {
-        if (result.error.message === "Email not confirmed") {
-          toast({
-            variant: "destructive",
-            title: "Login Gagal",
-            description: "Email belum dikonfirmasi! Silakan cek email Anda.",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Login Gagal",
-            description: result.error.message || "Email atau password salah",
-          });
-        }
+        toast({
+          variant: "destructive",
+          title: "Login Gagal",
+          description: result.error.message || "Email atau password salah.",
+        });
       } else if (result.data?.user) {
         setUser(result.data.user);
         toast({ title: "Login Berhasil", description: "Selamat datang kembali!" });
         navigate("/dashboard");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login Gagal",
+          description: "Login gagal, data user tidak ditemukan.",
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Login Error",
-        description: "Terjadi kesalahan, coba lagi.",
+        description: error?.message || "Terjadi kesalahan, coba lagi.",
       });
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">

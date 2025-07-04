@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { authAPI } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
   const [formData, setFormData] = useState({
-    fullName: "",
+    full_name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -30,44 +33,42 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const { fullName, email, phone, password, confirmPassword, agreeTerms } = formData;
-
-    console.log("password:", password);
-    console.log("confirmPassword:", confirmPassword);
-
-    if (password !== confirmPassword) {
-      alert("Kata sandi tidak cocok!");
-      return;
-    }
-
-    if (!agreeTerms) {
-      alert("Anda harus menyetujui syarat & ketentuan");
-      return;
-    }
-
     setIsLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone,
-        },
-      },
-    });
+    try {
+      const { full_name, email, phone, password, confirmPassword, agreeTerms } = formData;
 
-    setIsLoading(false);
+      if (password !== confirmPassword) {
+        toast({ variant: "destructive", title: "Error", description: "Kata sandi tidak cocok." });
+        return;
+      }
 
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Registrasi berhasil, silakan login");
-      navigate("/masuk");
+      if (!agreeTerms) {
+        toast({ variant: "destructive", title: "Error", description: "Harap setujui syarat & ketentuan." });
+        return;
+      }
+
+      const result = await authAPI.register({ email, password, full_name, phone });
+
+      if (result.error) {
+        toast({
+          variant: "destructive",
+          title: "Gagal Daftar",
+          description: result.error.message || "Terjadi kesalahan saat mendaftar.",
+        });
+      } else if (result.data?.user) {
+        toast({ title: "Pendaftaran Berhasil", description: "Silakan login untuk melanjutkan." });
+        navigate("/masuk");
+      } else {
+        toast({ variant: "destructive", title: "Gagal Daftar", description: "Tidak bisa mendaftar, coba lagi." });
+      }
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Gagal Daftar", description: error?.message || "Terjadi kesalahan." });
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
