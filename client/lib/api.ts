@@ -2,7 +2,6 @@
 
 const API_BASE_URL = "/api";
 
-// API Response types
 interface LoginResponse {
   user: {
     id: string;
@@ -29,7 +28,6 @@ interface PaymentResponse {
   };
 }
 
-// Generic API call function
 async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -69,6 +67,10 @@ export const authAPI = {
       return { error };
     }
 
+    if (!data.session) {
+      return { error: { message: "Login gagal, sesi tidak ditemukan." } };
+    }
+
     return { data };
   },
 
@@ -86,8 +88,6 @@ export const authAPI = {
   },
 };
 
-
-// Payment API calls
 export const paymentAPI = {
   createPayment: async (paymentData: {
     plan: string;
@@ -127,7 +127,6 @@ export const paymentAPI = {
   },
 };
 
-// Error handling utility
 export const handleAPIError = (error: any) => {
   if (error.message) {
     return error.message;
