@@ -1,9 +1,3 @@
-// Supabase client configuration for KlixGenix.ID
-// This file will handle all database operations with Supabase
-
-// TODO: Install Supabase client
-// npm install @supabase/supabase-js
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -182,12 +176,17 @@ export const supabaseUtils = {
     const fileName = `${userId}-${Math.random()}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
+    // Upload ke Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from('avatars')
-      .upload(filePath, file);
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true,
+      });
 
     if (uploadError) return { data: null, error: uploadError };
 
+    // Dapatkan public URL
     const { data: urlData } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
@@ -197,26 +196,6 @@ export const supabaseUtils = {
 };
 
 
-  async uploadAvatar(userId: string, file: File) {
-    // const fileExt = file.name.split('.').pop()
-    // const fileName = `${userId}-${Math.random()}.${fileExt}`
-    // const filePath = `avatars/${fileName}`
-
-    // const { data, error } = await supabase.storage
-    //   .from('avatars')
-    //   .upload(filePath, file)
-
-    // if (error) return { data: null, error }
-
-    // const { data: urlData } = supabase.storage
-    //   .from('avatars')
-    //   .getPublicUrl(filePath)
-
-    // return { data: urlData.publicUrl, error: null }
-    console.log("Uploading avatar for:", userId, file.name);
-    return { data: URL.createObjectURL(file), error: null };
-  },
-};
 
 // Environment variables needed:
 // VITE_SUPABASE_URL=your_supabase_project_url
