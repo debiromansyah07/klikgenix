@@ -78,6 +78,9 @@ export const authAPI = {
     password: string;
     full_name: string;
     phone: string;
+    confirmPassword?: string;
+  agreeTerms?: boolean;
+  agreeMarketing?: boolean;
   }) => {
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
