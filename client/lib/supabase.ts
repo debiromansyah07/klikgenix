@@ -5,6 +5,8 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// ------------------ Interfaces ------------------
+
 export interface User {
   id: string;
   email: string;
@@ -77,6 +79,8 @@ export interface AppUsage {
   created_at: string;
 }
 
+// ------------------ Supabase Utils ------------------
+
 export const supabaseUtils = {
   // User Profile
   async getUserProfile(userId: string) {
@@ -94,7 +98,7 @@ export const supabaseUtils = {
       .upsert({
         user_id: userId,
         ...profileData,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -117,7 +121,7 @@ export const supabaseUtils = {
       .upsert({
         user_id: userId,
         ...settings,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -156,9 +160,9 @@ export const supabaseUtils = {
         access_method: 'extension',
         usage_count: 1,
         last_accessed: new Date().toISOString(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       }, {
-        onConflict: 'user_id,app_name'
+        onConflict: 'user_id,app_name',
       });
     return { data, error };
   },
@@ -166,17 +170,17 @@ export const supabaseUtils = {
   // Auth
   async updatePassword(newPassword: string) {
     const { error } = await supabase.auth.updateUser({
-      password: newPassword
+      password: newPassword,
     });
     return { error };
   },
 
+  // Storage
   async uploadAvatar(userId: string, file: File) {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${userId}-${Math.random()}.${fileExt}`;
+    const fileName = `${userId}-${Date.now()}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
-    // Upload ke Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file, {
@@ -186,17 +190,14 @@ export const supabaseUtils = {
 
     if (uploadError) return { data: null, error: uploadError };
 
-    // Dapatkan public URL
     const { data: urlData } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 
     return { data: urlData.publicUrl, error: null };
-  }
-};
-export const supabaseUtils = {
-  // ...fungsi lainnya
+  },
 
+  // Guilds
   async getGuilds() {
     const { data, error } = await supabase.from('guilds').select('*');
     return { data, error };
@@ -208,7 +209,7 @@ export const supabaseUtils = {
       .select('guilds (*)')
       .eq('user_id', userId);
     return { data, error };
-  },
+  }
 };
 
 
