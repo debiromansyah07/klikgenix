@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import {
   Eye,
   EyeOff,
   Lock,
@@ -17,6 +18,7 @@ import { supabase } from "@/lib/supabase";
   Shield,
   Star,
 } from "lucide-react";
+
 
 export default function Register() {
   const [formData, setFormData] = useState({
