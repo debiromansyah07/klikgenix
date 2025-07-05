@@ -7,17 +7,7 @@ import {
 } from "react";
 import { supabase } from "@/lib/supabase";
 
-interface User {
-  id: string;
-  email: string;
-  fullName?: string;
-  phone?: string;
-  avatar?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  plan?: string;
-}
+// ... (import tetap)
 
 interface AuthContextType {
   user: User | null;
@@ -25,6 +15,7 @@ interface AuthContextType {
   loading: boolean;
   logout: () => void;
   setUser: (user: User | null) => void;
+  login: (user: User, token: string) => void; // ✅ tambahkan login di tipe
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,9 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
 
       if (session?.user) {
         const { data: profile } = await supabase
@@ -101,8 +90,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  // ✅ Tambahkan login manual (untuk login setelah register)
+  const login = (userData: User, _token: string) => {
+    setUser(userData);
+    // Simpan token jika kamu butuh, contoh:
+    // localStorage.setItem("token", token);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, logout, setUser }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, loading, logout, setUser, login }}
+    >
       {children}
     </AuthContext.Provider>
   );
