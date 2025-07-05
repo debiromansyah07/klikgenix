@@ -64,15 +64,21 @@ export default function Register() {
     try {
       const result = await authAPI.register(formData);
 
-      if (result.success) {
-        toast({
-          title: "Registrasi Berhasil",
-          description: "Akun Anda telah dibuat. Silakan login.",
-        });
-        navigate("/masuk"); // ✅ redirect diperbaiki
-      } else {
-        throw result.error;
-      }
+   if (result.success) {
+  const loginResult = await authAPI.login({
+    email: formData.email,
+    password: formData.password,
+  });
+
+  if (loginResult.success && loginResult.data) {
+    login(loginResult.data.user, loginResult.data.token);
+    toast({ title: "Berhasil", description: "Akun berhasil dibuat dan login otomatis." });
+    navigate("/dashboard");
+  } else {
+    navigate("/masuk"); // fallback kalau auto-login gagal
+  }
+}
+
     } catch (error) {
       toast({
         variant: "destructive",
