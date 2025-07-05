@@ -3,53 +3,80 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  User,
+  Phone,
+  ArrowRight,
+  Shield,
+  Star,
+} from "lucide-react";
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { toast } = useToast();
-  const { login } = useAuth();
-
-  // ✅ FIXED: biar scroll mobile tidak terkunci
+export default function Register() {
   useEffect(() => {
     document.body.style.overflow = "auto";
   }, []);
 
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    agreeTerms: false,
+    agreeMarketing: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Password tidak cocok!",
+      });
+      return;
+    }
+
+    if (!formData.agreeTerms) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Anda harus menyetujui syarat dan ketentuan!",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const result = await authAPI.login(formData);
+      const result = await authAPI.register(formData);
 
-      if (result.success && result.data) {
-        login(result.data.user, result.data.token);
+      if (result.success) {
         toast({
-          title: "Login Berhasil",
-          description: "Selamat datang kembali!",
+          title: "Registrasi Berhasil",
+          description: "Akun Anda telah dibuat. Silakan login.",
         });
-
-        const from = location.state?.from?.pathname || "/dashboard";
-        navigate(from, { replace: true });
+        navigate("/masuk"); // ✅ redirect diperbaiki
       } else {
         throw result.error;
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Login Gagal",
+        title: "Registrasi Gagal",
         description: handleAPIError(error),
       });
     } finally {
@@ -65,23 +92,23 @@ export default function Login() {
     }));
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleRegister = () => {
     toast({
-      title: "Google Login",
+      title: "Google Register",
       description: "Mengalihkan ke Google OAuth...",
     });
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/masuk");
     }, 1000);
   };
 
-  const handleFacebookLogin = () => {
+  const handleFacebookRegister = () => {
     toast({
-      title: "Facebook Login",
+      title: "Facebook Register",
       description: "Mengalihkan ke Facebook OAuth...",
     });
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/masuk");
     }, 1000);
   };
 
