@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Eye,
   EyeOff,
@@ -37,6 +38,7 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,21 +66,29 @@ export default function Register() {
     try {
       const result = await authAPI.register(formData);
 
-   if (result.success) {
-  const loginResult = await authAPI.login({
-    email: formData.email,
-    password: formData.password,
-  });
+      if (result.success) {
+        const loginResult = await authAPI.login({
+          email: formData.email,
+          password: formData.password,
+        });
 
-  if (loginResult.success && loginResult.data) {
-    login(loginResult.data.user, loginResult.data.token);
-    toast({ title: "Berhasil", description: "Akun berhasil dibuat dan login otomatis." });
-    navigate("/dashboard");
-  } else {
-    navigate("/masuk"); // fallback kalau auto-login gagal
-  }
-}
-
+        if (loginResult.success && loginResult.data) {
+          login(loginResult.data.user, loginResult.data.token);
+          toast({
+            title: "Berhasil",
+            description: "Akun berhasil dibuat dan login otomatis.",
+          });
+          navigate("/dashboard");
+        } else {
+          toast({
+            title: "Registrasi Berhasil",
+            description: "Silakan login manual.",
+          });
+          navigate("/masuk");
+        }
+      } else {
+        throw result.error;
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -96,26 +106,6 @@ export default function Register() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-  };
-
-  const handleGoogleRegister = () => {
-    toast({
-      title: "Google Register",
-      description: "Mengalihkan ke Google OAuth...",
-    });
-    setTimeout(() => {
-      navigate("/masuk");
-    }, 1000);
-  };
-
-  const handleFacebookRegister = () => {
-    toast({
-      title: "Facebook Register",
-      description: "Mengalihkan ke Facebook OAuth...",
-    });
-    setTimeout(() => {
-      navigate("/masuk");
-    }, 1000);
   };
 
   return (
