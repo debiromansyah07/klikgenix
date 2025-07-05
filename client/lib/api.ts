@@ -1,5 +1,7 @@
 // API utility functions for KlixGenix.ID
 
+import { supabase } from "./supabase";
+
 const API_BASE_URL = "/api";
 
 interface LoginResponse {
@@ -47,14 +49,18 @@ async function apiCall<T>(
       throw new Error(result.message || "API call failed");
     }
 
-    return result;
+    return { success: true, data: result };
   } catch (error) {
     console.error("API call error:", error);
-    throw error;
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Terjadi kesalahan yang tidak diketahui",
+    };
   }
 }
-
-import { supabase } from "./supabase";
 
 export const authAPI = {
   login: async (formData: { email: string; password: string }) => {
@@ -63,11 +69,16 @@ export const authAPI = {
       password: formData.password,
     });
 
-    if (error) return { error };
-    return { data };
+    if (error) return { success: false, error };
+    return { success: true, data };
   },
 
-  register: async (userData: { email: string; password: string; full_name: string; phone: string }) => {
+  register: async (userData: {
+    email: string;
+    password: string;
+    full_name: string;
+    phone: string;
+  }) => {
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
       password: userData.password,
@@ -78,7 +89,9 @@ export const authAPI = {
         },
       },
     });
-    return { data, error };
+
+    if (error) return { success: false, error };
+    return { success: true, data };
   },
 
   logout: async () => {
@@ -126,10 +139,8 @@ export const paymentAPI = {
 };
 
 export const handleAPIError = (error: any) => {
-  if (error.message) {
+  if (error?.message) {
     return error.message;
   }
   return "Terjadi kesalahan yang tidak diketahui";
 };
-if (error) return { success: false, error };
-return { success: true, data };
