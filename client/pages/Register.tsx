@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import {
   Eye,
   EyeOff,
@@ -40,6 +41,30 @@ export default function Register() {
   const { toast } = useToast();
   const { login } = useAuth();
 
+  // ✅ Real Supabase OAuth Google
+  const handleGoogleRegister = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Login Google Gagal",
+        description: error.message,
+      });
+    }
+  };
+
+  // ✅ Real Supabase OAuth Facebook
+  const handleFacebookRegister = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "facebook" });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Login Facebook Gagal",
+        description: error.message,
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -49,6 +74,67 @@ export default function Register() {
         title: "Error",
         description: "Password tidak cocok!",
       });
+      return;
+    }
+
+    if (!formData.agreeTerms) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Anda harus menyetujui syarat dan ketentuan!",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await authAPI.register(formData);
+
+      if (result.success) {
+        const loginResult = await authAPI.login({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        console.log("loginResult:", loginResult);
+        console.log("login() function:", login);
+
+        if (loginResult.success && loginResult.data) {
+          login(loginResult.data.user, loginResult.data.token);
+          toast({
+            title: "Berhasil",
+            description: "Akun berhasil dibuat dan login otomatis.",
+          });
+          navigate("/dashboard");
+        } else {
+          toast({
+            title: "Registrasi Berhasil",
+            description: "Silakan login manual.",
+          });
+          navigate("/masuk");
+        }
+      } else {
+        throw result.error;
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Registrasi Gagal",
+        description: handleAPIError(error),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
       return;
     }
 
