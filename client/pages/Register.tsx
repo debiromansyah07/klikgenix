@@ -183,7 +183,6 @@ export default function Register() {
       });
     } finally {
       setIsLoading(false);
-    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
