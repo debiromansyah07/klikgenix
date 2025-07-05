@@ -43,40 +43,38 @@ export default function Register() {
     };
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+  if (formData.password !== formData.confirmPassword) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "Password tidak cocok!",
+    });
+    return;
+  }
+
+  if (!formData.agreeTerms) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "Anda harus menyetujui syarat dan ketentuan!",
+    });
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const result = await authAPI.register(formData);
+
+    if (!result.error) {
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Password tidak cocok!",
+        title: "Registrasi Berhasil",
+        description: "Akun Anda telah dibuat. Silakan login untuk melanjutkan.",
       });
-      return;
-    }
 
-    if (!formData.agreeTerms) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Anda harus menyetujui syarat dan ketentuan!",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const result = await authAPI.register(formData);
-
-      if (result.success) {
-        toast({
-          title: "Registrasi Berhasil",
-          description:
-            "Akun Anda telah dibuat. Silakan login untuk melanjutkan.",
-        });
-        navigate("/login");
-      }
     } catch (error) {
       toast({
         variant: "destructive",

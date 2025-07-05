@@ -368,10 +368,7 @@ export default function Login() {
                 {/* Sign Up Link */}
                 <div className="text-center">
                   <span className="text-gray-400">Belum punya akun? </span>
-                  <Link
-                    to="/register"
-                    className="text-primary hover:text-primary/80 font-medium transition-colors"
-                  >
+                  <Link to="/daftar" className="text-primary hover:text-primary/80 font-medium transition-colors">
                     Daftar sekarang
                   </Link>
                 </div>

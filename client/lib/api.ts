@@ -131,3 +131,5 @@ export const handleAPIError = (error: any) => {
   }
   return "Terjadi kesalahan yang tidak diketahui";
 };
+if (error) return { success: false, error };
+return { success: true, data };

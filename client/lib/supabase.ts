@@ -194,7 +194,22 @@ export const supabaseUtils = {
     return { data: urlData.publicUrl, error: null };
   }
 };
+export const supabaseUtils = {
+  // ...fungsi lainnya
 
+  async getGuilds() {
+    const { data, error } = await supabase.from('guilds').select('*');
+    return { data, error };
+  },
+
+  async getMyGuilds(userId: string) {
+    const { data, error } = await supabase
+      .from('guild_members')
+      .select('guilds (*)')
+      .eq('user_id', userId);
+    return { data, error };
+  },
+};
 
 
 // Environment variables needed:
