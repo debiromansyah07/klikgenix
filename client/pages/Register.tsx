@@ -74,6 +74,10 @@ const handleSubmit = async (e: React.FormEvent) => {
         title: "Registrasi Berhasil",
         description: "Akun Anda telah dibuat. Silakan login untuk melanjutkan.",
       });
+      navigate("/login");
+  } else {
+    throw result.error;
+  }
 
     } catch (error) {
       toast({
