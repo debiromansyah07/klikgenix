@@ -41,7 +41,6 @@ export default function Register() {
   const { toast } = useToast();
   const { login } = useAuth();
 
-  // ✅ Real Supabase OAuth Google
   const handleGoogleRegister = async () => {
     const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
     if (error) {
@@ -53,7 +52,6 @@ export default function Register() {
     }
   };
 
-  // ✅ Real Supabase OAuth Facebook
   const handleFacebookRegister = async () => {
     const { error } = await supabase.auth.signInWithOAuth({ provider: "facebook" });
     if (error) {
@@ -97,9 +95,6 @@ export default function Register() {
           password: formData.password,
         });
 
-        console.log("loginResult:", loginResult);
-        console.log("login() function:", login);
-
         if (loginResult.success && loginResult.data) {
           login(loginResult.data.user, loginResult.data.token);
           toast({
@@ -135,64 +130,6 @@ export default function Register() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-      return;
-    }
-
-    if (!formData.agreeTerms) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Anda harus menyetujui syarat dan ketentuan!",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const result = await authAPI.register(formData);
-
-      if (result.success) {
-        const loginResult = await authAPI.login({
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (loginResult.success && loginResult.data) {
-          login(loginResult.data.user, loginResult.data.token);
-          toast({
-            title: "Berhasil",
-            description: "Akun berhasil dibuat dan login otomatis.",
-          });
-          navigate("/dashboard");
-        } else {
-          toast({
-            title: "Registrasi Berhasil",
-            description: "Silakan login manual.",
-          });
-          navigate("/masuk");
-        }
-      } else {
-        throw result.error;
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Registrasi Gagal",
-        description: handleAPIError(error),
-      });
-    } finally {
-      setIsLoading(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left Side - Branding */}
