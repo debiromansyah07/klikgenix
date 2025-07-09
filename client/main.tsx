@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "@/contexts/AuthContext"; // ✅ ADD THIS
 import Payment from "./pages/Payment";
 import DownloadExtension from "./pages/DownloadExtension";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/download-extension" element={<DownloadExtension />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+
           </Routes>
         </BrowserRouter>
       </AuthProvider>
