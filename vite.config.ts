@@ -1,26 +1,16 @@
-import { defineConfig, Plugin } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { createServer } from "./server";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import path from "path";
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
-  build: {
-    outDir: "dist/spa",
-  },
+export default defineConfig({
   plugins: [
     react(),
-    expressPlugin(),
     viteStaticCopy({
       targets: [
         {
           src: "public/_redirects",
-          dest: ".", // hasilnya: dist/spa/_redirects
+          dest: ".", // Salin ke root dist saat build
         },
       ],
     }),
@@ -28,18 +18,14 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
-      "@shared": path.resolve(__dirname, "./shared"),
+      "@pages": path.resolve(__dirname, "./client/pages"),
+      "@components": path.resolve(__dirname, "./client/components"),
+      "@contexts": path.resolve(__dirname, "./client/contexts"),
     },
   },
-}));
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve",
-    configureServer(server) {
-      const app = createServer();
-      server.middlewares.use(app);
-    },
-  };
-}
+  build: {
+    outDir: "dist/spa",
+    emptyOutDir: true,
+  },
+  base: "/",
+});
