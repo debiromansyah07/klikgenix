@@ -10,44 +10,37 @@ export default function RedirectDashboard() {
 
 useEffect(() => {
   const checkPlan = async () => {
-    const { data: session, error: sessionError } = await supabase.auth.getSession();
+  const { data: session, error: sessionError } = await supabase.auth.getSession();
 
-    console.log("session:", session);
-    console.log("sessionError:", sessionError);
+  if (sessionError || !session?.session?.user) {
+    navigate("/login");
+    return;
+  }
 
-    if (sessionError || !session?.session?.user) {
-      console.log("Redirecting to /login");
-      navigate("/login");
-      return;
-    }
+  const user = session.session.user;
 
-    const user = session.session.user;
-    console.log("Logged in user:", user);
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .single();
+  const { data: subsData } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", user.id);
 
-    if (!data || error) {
-      navigate("/dashboard/profile");
-      return;
-    }
+  if (!subsData || subsData.length === 0) {
+    navigate("/dashboard/profile");
+    return;
+  }
 
-    switch (data.plan) {
-      case "EXCLUSIVE":
-        navigate("/dashboard");
-        break;
-      case "PREMIUM":
-        navigate("/dashboard/premium");
-        break;
-      case "EDUCATION":
-        navigate("/dashboard/education");
-        break;
-      default:
-        navigate("/dashboard/profile");
-    }
-  };
+  const plan = subsData[0]?.plan;
+
+  if (plan === "EXCLUSIVE") {
+    navigate("/dashboard");
+  } else if (plan === "EDUCATION") {
+    navigate("/education-dashboard");
+  } else if (plan === "PREMIUM") {
+    navigate("/premium-dashboard");
+  } else {
+    navigate("/dashboard/profile");
+  }
+};
 
     // Eksekusi fetch plan
     checkPlan();
