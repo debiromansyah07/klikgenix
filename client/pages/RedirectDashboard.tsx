@@ -8,42 +8,46 @@ export default function RedirectDashboard() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (loading) return; // ⏳ Tunggu sampai loading selesai
+useEffect(() => {
+  const checkPlan = async () => {
+    const {
+      data: session,
+      error: sessionError,
+    } = await supabase.auth.getSession();
 
-    if (!user || !user.id) {
-      // Kalau user belum login, arahkan ke login atau profile
+    if (sessionError || !session?.session?.user) {
+      navigate("/login");
+      return;
+    }
+
+    const user = session.session.user;
+
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .single();
+
+    if (!data || error) {
       navigate("/dashboard/profile");
       return;
     }
 
-    const checkPlan = async () => {
-      const { data, error } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("status", "active")
-        .single();
-
-      if (!data || error) {
+    switch (data.plan) {
+      case "EXCLUSIVE":
+        navigate("/dashboard");
+        break;
+      case "PREMIUM":
+        navigate("/dashboard/premium");
+        break;
+      case "EDUCATION":
+        navigate("/dashboard/education");
+        break;
+      default:
         navigate("/dashboard/profile");
-        return;
-      }
-
-      switch (data.plan) {
-        case "EXCLUSIVE":
-          navigate("/dashboard/exclusive");
-          break;
-        case "PREMIUM":
-          navigate("/dashboard/premium");
-          break;
-        case "EDUCATION":
-          navigate("/dashboard/education");
-          break;
-        default:
-          navigate("/dashboard/profile");
-      }
-    };
+    }
+  };
 
     // Eksekusi fetch plan
     checkPlan();
