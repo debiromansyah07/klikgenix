@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import RedirectDashboard from "@/pages/RedirectDashboard";
 
 import Index from "./pages/Index";
 import Fitur from "./pages/Fitur";
@@ -93,14 +94,13 @@ const App = () => (
             <Route path="/download-extension" element={<DownloadExtension />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Redirector */}
-            <Route path="/redirect-dashboard" element={<DashboardRedirect />} />
-
-            {/* Protected Dashboard */}
-            <Route path="/dashboard/exclusive" element={<ExclusiveDashboard />} />  // ✅ tambah ini
+            <Route path="/dashboard" element={<Navigate to="/redirect-dashboard" replace />} />
+            <Route path="/dashboard/exclusive" element={<ExclusiveDashboard />} />
             <Route path="/dashboard/premium" element={<PremiumDashboard />} />
             <Route path="/dashboard/education" element={<EducationDashboard />} />
             <Route path="/dashboard/profile" element={<DashboardProfile />} />
+            <Route path="/redirect-dashboard" element={<RedirectDashboard />} />
+
 
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
