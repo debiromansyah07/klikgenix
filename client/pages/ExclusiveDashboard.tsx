@@ -18,6 +18,7 @@ import AppsListModal from "@/components/AppsListModal";
 import UpgradePlanModal from "@/components/UpgradePlanModal";
 import { openWhatsAppSupport, openEmailSupport } from "@/lib/support";
 import { supabaseUtils } from "@/lib/supabase";
+import BasicDashboard from "@/components/BasicDashboard";
 
 const recentActivities = [
   {
@@ -141,7 +142,7 @@ const availableApps = [
   },
 ];
 
-export default function Dashboard() {
+export default function ExclusiveDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   // Removed credential modal states - using extension access only
   const [isAppsListModalOpen, setIsAppsListModalOpen] = useState(false);
@@ -156,15 +157,35 @@ export default function Dashboard() {
 
   useEffect(() => {
   const fetchSubscription = async () => {
+    
     const { data } = await supabaseUtils.getUserSubscription(user.id);
+    if (!data) {
+      navigate("/dashboard/profile");
+      return;
+    }
+
+    switch (data.plan) {
+      case "PREMIUM":
+        navigate("/dashboard/premium");
+        return;
+      case "EDUCATION":
+        navigate("/dashboard/education");
+        return;
+      case "EXCLUSIVE":
+        break; // tetap di /dashboard
+      default:
+        navigate("/dashboard/profile");
+        return;
+    }
+
     setSubscription(data); // null kalau belum bayar
     setLoading(false);
   };
 
-  if (user?.id) {
+   if (user?.id) {
     fetchSubscription();
   }
-}, [user]);
+},[user, navigate])
 
   const handleLogout = () => {
     logout();

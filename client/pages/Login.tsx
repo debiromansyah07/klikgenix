@@ -49,8 +49,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       description: "Selamat datang kembali!",
     });
 
-    const from = location.state?.from?.pathname || "/dashboard";
-    navigate(from, { replace: true });
+    navigate("/redirect-dashboard", { replace: true });
   } catch (error: any) {
     toast({
       variant: "destructive",

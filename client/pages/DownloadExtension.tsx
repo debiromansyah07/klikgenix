@@ -415,13 +415,13 @@ if (window.location.hostname.includes('netflix.com')) {
             </Link>
             <div className="flex items-center space-x-4">
               <Badge className={`${currentPlan.color} text-white border-0`}>
-                {currentPlan.name}
-              </Badge>
-              <Link to="/dashboard">
-                <Button
-                  variant="outline"
-                  className="border-white/20 text-white hover:bg-white/10"
-                >
+    {currentPlan.name}
+  </Badge>
+  <Link to="/redirect-dashboard">
+    <Button
+      variant="outline"
+      className="border-white/20 text-white hover:bg-white/10"
+    >
                   Dashboard
                 </Button>
               </Link>
@@ -432,7 +432,8 @@ if (window.location.hostname.includes('netflix.com')) {
 
       {/* Main Content */}
       <main className="container-padding py-12">
-        <div className="max-w-4xl mx-auto">
+  <div className="max-w-4xl mx-auto">
+
           {/* Success Message */}
           <div className="text-center mb-12 animate-fade-in-up">
             <div className="mb-6">
@@ -643,7 +644,7 @@ if (window.location.hostname.includes('netflix.com')) {
           {/* Action Buttons */}
           <div className="text-center mt-12 space-y-4">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/dashboard">
+              <Link to="/redirect-dashboard">
                 <Button className="bg-white/10 text-white border border-white/20 hover:bg-white/20 px-8 py-3">
                   Ke Dashboard
                 </Button>
