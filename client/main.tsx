@@ -35,6 +35,7 @@ const App = () => (
             <Route path="/daftar" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/payment" element={<Payment />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
