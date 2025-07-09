@@ -93,6 +93,8 @@ const App = () => (
             <Route path="/payment" element={<Payment />} />
             <Route path="/download-extension" element={<DownloadExtension />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/login" element={<Login />} />
+
 
             <Route path="/dashboard" element={<Navigate to="/redirect-dashboard" replace />} />
             <Route path="/dashboard/exclusive" element={<ExclusiveDashboard />} />
