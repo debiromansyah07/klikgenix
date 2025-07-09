@@ -12,9 +12,4 @@
   to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
-
-# ✅ Ini yang WAJIB ada untuk React Router agar route tidak 404
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  
