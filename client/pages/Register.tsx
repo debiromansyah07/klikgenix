@@ -64,64 +64,61 @@ export default function Register() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Password tidak cocok!",
-      });
-      return;
+  if (formData.password !== formData.confirmPassword) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "Password tidak cocok!",
+    });
+    return;
+  }
+
+  if (!formData.agreeTerms) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "Anda harus menyetujui syarat dan ketentuan!",
+    });
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.fullName,
+          phone: formData.phone,
+        },
+      },
+    });
+
+    if (error) {
+      throw error;
     }
 
-    if (!formData.agreeTerms) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Anda harus menyetujui syarat dan ketentuan!",
-      });
-      return;
-    }
+    toast({
+      title: "Registrasi Berhasil",
+      description: "Silakan cek email Anda untuk verifikasi.",
+    });
 
-    setIsLoading(true);
+    navigate("/masuk"); // atau /login sesuai route kamu
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: "Registrasi Gagal",
+      description: error.message || "Terjadi kesalahan saat registrasi.",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    try {
-      const result = await authAPI.register(formData);
-
-      if (result.success) {
-        const loginResult = await authAPI.login({
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (loginResult.success && loginResult.data) {
-          login(loginResult.data.user, loginResult.data.token);
-          toast({
-            title: "Berhasil",
-            description: "Akun berhasil dibuat dan login otomatis.",
-          });
-          navigate("/dashboard");
-        } else {
-          toast({
-            title: "Registrasi Berhasil",
-            description: "Silakan login manual.",
-          });
-          navigate("/masuk");
-        }
-      } else {
-        throw result.error;
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Registrasi Gagal",
-        description: handleAPIError(error),
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;

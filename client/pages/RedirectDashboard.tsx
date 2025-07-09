@@ -9,6 +9,14 @@ export default function RedirectDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (loading) return; // ⏳ Tunggu sampai loading selesai
+
+    if (!user || !user.id) {
+      // Kalau user belum login, arahkan ke login atau profile
+      navigate("/dashboard/profile");
+      return;
+    }
+
     const checkPlan = async () => {
       const { data, error } = await supabase
         .from("subscriptions")
@@ -37,14 +45,13 @@ export default function RedirectDashboard() {
       }
     };
 
-    if (!loading && user?.id) {
-      checkPlan();
-    }
+    // Eksekusi fetch plan
+    checkPlan();
   }, [user, loading, navigate]);
 
   return (
     <div className="text-white text-center mt-10">
-      Redirecting to your dashboard...
+      {loading ? "Memuat akun..." : "Mengalihkan ke dashboard..."}
     </div>
   );
 }
