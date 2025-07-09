@@ -17,7 +17,10 @@
     "start": "vite preview",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "build-and-open": "npm run build && start dist/spa",
+    "deploy-netlify": "npm run build && netlify deploy --prod --dir=dist/spa"
+    
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.3",

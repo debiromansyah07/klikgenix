@@ -10,19 +10,19 @@ export default function RedirectDashboard() {
 
 useEffect(() => {
   const checkPlan = async () => {
-    const {
-      data: session,
-      error: sessionError,
-    } = await supabase.auth.getSession();
+    const { data: session, error: sessionError } = await supabase.auth.getSession();
+
+    console.log("session:", session);
+    console.log("sessionError:", sessionError);
 
     if (sessionError || !session?.session?.user) {
+      console.log("Redirecting to /login");
       navigate("/login");
       return;
     }
 
     const user = session.session.user;
-
-    const { data, error } = await supabase
+    console.log("Logged in user:", user);
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
