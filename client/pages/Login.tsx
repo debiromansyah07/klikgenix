@@ -8,6 +8,7 @@ import { authAPI, handleAPIError } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -29,34 +30,36 @@ export default function Login() {
     };
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const result = await authAPI.login(formData);
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
 
-      if (result.success && result.data) {
-        login(result.data.user, result.data.token);
-        toast({
-          title: "Login Berhasil",
-          description: "Selamat datang kembali!",
-        });
-
-        const from = location.state?.from?.pathname || "/dashboard";
-        navigate(from, { replace: true });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Login Gagal",
-        description: handleAPIError(error),
-      });
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      throw error;
     }
-  };
 
+    toast({
+      title: "Login Berhasil",
+      description: "Selamat datang kembali!",
+    });
+
+    const from = location.state?.from?.pathname || "/dashboard";
+    navigate(from, { replace: true });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: "Login Gagal",
+      description: error.message || "Terjadi kesalahan saat login.",
+    });
+  } finally {
+    setIsLoading(false);
+  }};
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
