@@ -9,10 +9,10 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "public/_redirects",
-          dest: ".", // Salin ke root dist saat build
-        },
-      ],
+          src: 'public/_redirects',
+          dest: '.' // agar ditempatkan langsung di dalam dist/spa/
+        }
+      ]
     }),
   ],
   resolve: {
