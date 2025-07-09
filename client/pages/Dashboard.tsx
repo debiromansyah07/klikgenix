@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,16 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import AppsListModal from "@/components/AppsListModal";
 import UpgradePlanModal from "@/components/UpgradePlanModal";
 import { openWhatsAppSupport, openEmailSupport } from "@/lib/support";
-
-const userData = {
-  name: "John Doe",
-  email: "john@example.com",
-  plan: "EXCLUSIVE",
-  planExpiry: "2024-12-31",
-  usageQuota: 75,
-  totalApps: 82, // 13 exclusive + 69 premium apps via extension
-  usedApps: 15,
-};
+import { supabaseUtils } from "@/lib/supabase";
 
 const recentActivities = [
   {
@@ -159,6 +150,22 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+
+  const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  const fetchSubscription = async () => {
+    const { data } = await supabaseUtils.getUserSubscription(user.id);
+    setSubscription(data); // null kalau belum bayar
+    setLoading(false);
+  };
+
+  if (user?.id) {
+    fetchSubscription();
+  }
+}, [user]);
+
   const handleLogout = () => {
     logout();
     toast({
@@ -169,6 +176,33 @@ export default function Dashboard() {
   };
 
   // Removed handleAppClick - all apps now use extension access only
+  if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-white">
+      Loading...
+    </div>
+  );
+}
+
+if (!subscription) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-white p-4 text-center">
+      <h1 className="text-2xl font-bold mb-4">Welcome, {user?.email}</h1>
+      <p className="text-gray-300 mb-6">
+        Anda belum memiliki plan aktif. Silakan pilih plan untuk mulai
+        menggunakan layanan.
+      </p>
+      <Button onClick={() => setIsUpgradeModalOpen(true)}>Upgrade Plan</Button>
+
+      <UpgradePlanModal
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
+        currentPlan="None"
+      />
+    </div>
+  );
+}
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -187,7 +221,7 @@ export default function Dashboard() {
       <UpgradePlanModal
         isOpen={isUpgradeModalOpen}
         onClose={() => setIsUpgradeModalOpen(false)}
-        currentPlan={userData.plan}
+        currentPlan={subscription.plan}
       />
 
       {/* Header */}
@@ -209,7 +243,7 @@ export default function Dashboard() {
 
             <div className="flex items-center space-x-4">
               <span className="text-gray-300">
-                Welcome, {user?.email || userData.email}
+                Welcome, {user?.email || subscription.email}
               </span>
               <Button
                 variant="ghost"
@@ -279,10 +313,10 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-white">
-                    {userData.plan}
+                    {subscription.plan}
                   </div>
                   <p className="text-xs text-gray-400">
-                    Expires on {userData.planExpiry}
+                    Expires on {subscription.planExpiry}
                   </p>
                 </CardContent>
               </Card>
@@ -298,10 +332,10 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-white">
-                    {userData.usedApps}/{userData.totalApps}
+                    {subscription.usedApps}/{subscription.totalApps}
                   </div>
                   <Progress
-                    value={(userData.usedApps / userData.totalApps) * 100}
+                    value={(subscription.usedApps / subscription.totalApps) * 100}
                     className="mt-2 transition-all duration-1000 ease-out"
                   />
                 </CardContent>
@@ -318,10 +352,10 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-white">
-                    {userData.usageQuota}%
+                    {subscription.usageQuota}%
                   </div>
                   <Progress
-                    value={userData.usageQuota}
+                    value={subscription.usageQuota}
                     className="mt-2 transition-all duration-1000 ease-out"
                   />
                 </CardContent>
@@ -381,7 +415,7 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-3">
                   <span className="text-2xl">🔑🔧</span>
-                  Access Method - {userData.plan} Plan
+                  Access Method - {subscription.plan} Plan
                 </CardTitle>
                 <CardDescription className="text-gray-300">
                   Hybrid access: 13 exclusive apps dengan direct credentials +
@@ -572,7 +606,7 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-3">
                   <span className="text-2xl">✨</span>
-                  {userData.plan} Plan Features
+                  {subscription.plan} Plan Features
                 </CardTitle>
                 <CardDescription className="text-gray-300">
                   Akses method dan benefits yang Anda miliki
@@ -704,18 +738,18 @@ export default function Dashboard() {
                     variant="outline"
                     className="border-red-500 text-red-400"
                   >
-                    {userData.plan} Plan
+                    {subscription.plan} Plan
                   </Badge>
                 </CardTitle>
                 <CardDescription className="text-gray-300">
                   Pelajari cara menggunakan KlixGenix.ID untuk plan{" "}
-                  {userData.plan} Anda
+                  {subscription.plan} Anda
                 </CardDescription>
               </CardHeader>
             </Card>
 
             {/* Video Tutorial by Plan */}
-            {userData.plan === "EXCLUSIVE" && (
+            {subscription.plan === "EXCLUSIVE" && (
               <Card className="glass-morphism border-white/10 border-purple-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-3">
@@ -794,7 +828,7 @@ export default function Dashboard() {
               </Card>
             )}
 
-            {userData.plan === "PREMIUM" && (
+            {subscription.plan === "PREMIUM" && (
               <Card className="glass-morphism border-white/10 border-blue-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-3">
@@ -871,7 +905,7 @@ export default function Dashboard() {
               </Card>
             )}
 
-            {userData.plan === "EDUCATION" && (
+            {subscription.plan === "EDUCATION" && (
               <Card className="glass-morphism border-white/10 border-green-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-3">
